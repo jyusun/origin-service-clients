@@ -1,0 +1,42 @@
+server:
+  port: 10012
+spring:
+  application:
+    name: @artifactId@
+  profiles:
+    active: dev # 默认激活开发环境配置
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        server-addr: nacos.jyusun.com:8848
+        ip: 192.168.98.30
+      config: # 配置中心
+        enabled: true
+        server-addr: nacos.jyusun.com:8848
+        namespace: origin_${spring.profiles.active}_namespace
+        file-extension: yml # 配置文件后缀
+        shared-configs:
+          #- origin--${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+          - mybatis-plus-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+          - origin-admin.${spring.cloud.nacos.config.file-extension}
+    sentinel: # 流量防卫兵
+      enabled: true
+      transport:
+        client-ip: sentinel.jyusun.com
+        port: 8858
+
+origin-business:
+  notice:
+    mail:
+      RULE1: 123456
+
+feign:
+  sentinel:
+    enabled: true
+  client:
+    config:
+      feignName:
+        connectTimeout: 5000  # 相当于Request.Optionsn 连接超时时间
+        readTimeout: 5000     # 相当于Request.Options 读取超时时间
+        loggerLevel: full     # 配置Feign的日志级别，相当于代码配置方式中的Logger
